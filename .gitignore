@@ -1,6 +1,2 @@
-build
-out
-.cache
+cmake-build-debug
 .idea
-.vs
-.vscode
