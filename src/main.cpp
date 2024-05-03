@@ -9,7 +9,7 @@ int world_map[ MAP_WIDTH * MAP_HEIGHT ] =
         {
 
 // 0001020304050607080910111213141516171819
-                1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,   // 00
+                1,9,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,   // 00
                 1,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,1,   // 01
                 1,9,9,1,1,9,9,9,1,9,1,9,1,9,1,9,9,9,1,1,   // 02
                 1,9,9,1,1,9,9,9,1,9,1,9,1,9,1,9,9,9,1,1,   // 03
@@ -53,6 +53,7 @@ int main()
     window.setFramerateLimit(144);
 
     sf::RectangleShape cell(sf::Vector2f (40,40));
+    sf::Vector2 mousePos(0,0);
 
 
     while (window.isOpen())
@@ -68,6 +69,8 @@ int main()
                     if(event.key.code == sf::Keyboard::Key::Escape)
                         window.close();
                         break;
+                case sf::Event::EventType::MouseMoved:
+                    mousePos = sf::Vector2(event.mouseMove.x, event.mouseMove.y);
             }
         }
 
@@ -81,6 +84,8 @@ int main()
                     cell.setFillColor(sf::Color::White);
                 else
                     cell.setFillColor(sf::Color::Black);
+                if (i == mousePos.y/40 && j == mousePos.x/40)
+                    cell.setFillColor(sf::Color::Green);
                 cell.setPosition(j * MAP_HEIGHT * 2, i * MAP_WIDTH * 2);
                 window.draw(cell);
             }
