@@ -11,7 +11,10 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(CheeseFinder src/main.cpp)
+add_executable(CheeseFinder src/main.cpp
+        src/GameMap.cpp
+        src/GameMap.h
+)
 target_link_libraries(CheeseFinder PRIVATE sfml-graphics)
 target_compile_features(CheeseFinder PRIVATE cxx_std_17)
 
