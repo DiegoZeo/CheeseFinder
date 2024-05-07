@@ -14,6 +14,10 @@ FetchContent_MakeAvailable(SFML)
 add_executable(CheeseFinder src/main.cpp
         src/GameMap.cpp
         src/GameMap.h
+        src/stlastar.h
+        src/fsa.h
+        src/MapSeachNode.cpp
+        src/MapSeachNode.h
 )
 target_link_libraries(CheeseFinder PRIVATE sfml-graphics)
 target_compile_features(CheeseFinder PRIVATE cxx_std_17)
