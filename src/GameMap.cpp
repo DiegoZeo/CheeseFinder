@@ -21,6 +21,13 @@ int GameMap::GetMap(int x, int y)
     return world_map[(y*MAP_WIDTH)+x];
 }
 
+void GameMap::SwitchCellState(int x, int y)
+{
+    if(GetMap(x, y) == 1)
+        world_map[(y*MAP_WIDTH)+x] = 9;
+    else world_map[(y*MAP_WIDTH)+x] = 1;
+}
+
 void GameMap::DrawMap(sf::RenderWindow* window , sf::Vector2i pos)
 {
     sf::RectangleShape cell(sf::Vector2f(40,40));

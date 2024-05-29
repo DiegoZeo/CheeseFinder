@@ -6,10 +6,12 @@
 
 int main()
 {
+    // Open window
     sf::Uint32 style = sf::Style::Titlebar | sf::Style::Close;
-    auto window = sf::RenderWindow{ { 800u, 800u }, "ChesseFinder", style};
+    auto window = sf::RenderWindow{ { 1000u, 800u }, "ChesseFinder", style};
     window.setFramerateLimit(144);
 
+    //Game assets declaration
     sf::CircleShape rat(20);
     rat.setFillColor(sf::Color::Magenta);
     sf::RectangleShape cheese(sf::Vector2f (40, 40));
@@ -57,6 +59,20 @@ int main()
                 case sf::Event::EventType::KeyPressed:
                     if(event.key.code == sf::Keyboard::Key::Escape)
                         window.close();
+                    if(event.key.code == sf::Keyboard::Key::E)
+                    {
+                        map->SwitchCellState(mousePos.x / 40, mousePos.y /40);
+                        astarsearch.SetStartAndGoalStates( *nodeCurrent, nodeEnd );
+
+                        do
+                        {
+                            SearchState = astarsearch.SearchStep(map);
+                        }
+                        while(SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING);
+
+                        nodeCurrent = astarsearch.GetSolutionStart();
+                        break;
+                    }
                         break;
                 case sf::Event::EventType::MouseMoved:
                     mousePos = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
@@ -76,7 +92,7 @@ int main()
 
         if(nodeCurrent->x != nodeEnd.x || nodeCurrent->y != nodeEnd.y)
         {
-            if(time.asSeconds() > 0.25)
+            if(time.asSeconds() > 0.50)
             {
                 clock.restart();
                 nodeCurrent = astarsearch.GetSolutionNext();
