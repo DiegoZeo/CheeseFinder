@@ -2,7 +2,7 @@
 
 #include "GameMap.h"
 #include "MapSeachNode.h"
-#include "stlastar.h"
+#include "Rat.h"
 
 int main()
 {
@@ -12,9 +12,7 @@ int main()
     window.setFramerateLimit(144);
 
     //Game assets declaration
-    sf::CircleShape rat(20);
-    rat.setFillColor(sf::Color::Magenta);
-    sf::RectangleShape cheese(sf::Vector2f (40, 40));
+    sf::RectangleShape cheese(sf::Vector2f (32, 32));
     cheese.setFillColor(sf::Color::Blue);
 
     sf::Vector2i mousePos(0,0);
@@ -22,10 +20,7 @@ int main()
     sf::Clock clock;
     sf::Time time;
 
-    GameMap* map = new GameMap();
-
-    AStarSearch<MapSearchNode> astarsearch;
-    unsigned int SearchState;
+    auto* map = new GameMap();
 
     MapSearchNode nodeStart;
     nodeStart.x = 0;
@@ -35,17 +30,7 @@ int main()
     nodeEnd.x = 3;
     nodeEnd.y = 0;
 
-    MapSearchNode* nodeCurrent;
-
-    astarsearch.SetStartAndGoalStates( nodeStart, nodeEnd );
-
-    do
-    {
-          SearchState = astarsearch.SearchStep(map);
-    }
-    while(SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING);
-
-    nodeCurrent = astarsearch.GetSolutionStart();
+    Rat* nezumi = new Rat(nodeStart, nodeEnd, map);
 
     while (window.isOpen())
     {
@@ -59,24 +44,17 @@ int main()
                 case sf::Event::EventType::KeyPressed:
                     if(event.key.code == sf::Keyboard::Key::Escape)
                         window.close();
-                    if(event.key.code == sf::Keyboard::Key::E)
-                    {
-                        map->SwitchCellState(mousePos.x / 40, mousePos.y /40);
-                        astarsearch.SetStartAndGoalStates( *nodeCurrent, nodeEnd );
-
-                        do
-                        {
-                            SearchState = astarsearch.SearchStep(map);
-                        }
-                        while(SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING);
-
-                        nodeCurrent = astarsearch.GetSolutionStart();
-                        break;
-                    }
-                        break;
+                    break;
                 case sf::Event::EventType::MouseMoved:
                     mousePos = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
                     break;
+                case sf::Event::EventType::MouseButtonPressed:
+                    if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                    {
+                        map->SwitchCellState(mousePos.x / 40, mousePos.y /40);
+                        nezumi->FindNewPath(map);
+                        break;
+                    }
             }
         }
 
@@ -85,17 +63,16 @@ int main()
         map->DrawMap(&window, mousePos);
         cheese.setPosition(nodeEnd.x * 40, nodeEnd.y * 40);
         window.draw((cheese));
-        rat.setPosition(nodeCurrent->x * 40, nodeCurrent->y * 40);
-        window.draw(rat);
+        nezumi->Draw(&window);
 
         window.display();
 
-        if(nodeCurrent->x != nodeEnd.x || nodeCurrent->y != nodeEnd.y)
+        if(nezumi->position->x != nodeEnd.x || nezumi->position->y != nodeEnd.y)
         {
             if(time.asSeconds() > 0.50)
             {
                 clock.restart();
-                nodeCurrent = astarsearch.GetSolutionNext();
+                nezumi->Step();
             }
         }
 

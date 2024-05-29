@@ -30,7 +30,7 @@ void GameMap::SwitchCellState(int x, int y)
 
 void GameMap::DrawMap(sf::RenderWindow* window , sf::Vector2i pos)
 {
-    sf::RectangleShape cell(sf::Vector2f(40,40));
+    sf::RectangleShape cell(sf::Vector2f(32,32));
     for(int i = 0; i<MAP_HEIGHT; i++)
     {
         for(int j = 0; j<MAP_HEIGHT; j++)
